@@ -6,15 +6,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+
 
 import hr.java.vjezbe.entitet.Artikl;
 import hr.java.vjezbe.entitet.Automobil;
@@ -32,7 +32,7 @@ import hr.java.vjezbe.sortiranje.ArtiklSorter;
  * Predstavlja programski dio koda koji služi za kreiranje i objavu oglasa
  * 
  * @author deva
- * @version Devcic-4
+ * @version Devcic-5
  */
 public class Glavna {
 
@@ -91,17 +91,15 @@ public class Glavna {
 	System.out.print("Unesite broj kategorija koje želite unijeti: ");
 	int brojKategorija = provjeriIntBroj(ucitavac);
 	ucitavac.nextLine();
-	List<Kategorija> listaKategorija = new ArrayList<>();
+	List<Kategorija<?>> listaKategorija = new ArrayList<>();
 	for (int k = 0; k < brojKategorija; k++) {
 	    listaKategorija.add(unesiKategoriju(ucitavac, k));
 
 	}
-	Map<Kategorija, List<Artikl>> mapaArtikalaPoKategoriji = new HashMap<>();
+	Map<Kategorija<?>, List<Artikl>> mapaArtikalaPoKategoriji = new HashMap<>();
 
-	for (Kategorija kategorija : listaKategorija) {
-	    Set<Artikl> setArtikalaKategorije = new HashSet<>();
-	    setArtikalaKategorije = kategorija.getArtikli();
-	    List<Artikl> listaArtikalaKategorije = new ArrayList<>(setArtikalaKategorije);
+	for (Kategorija<?> kategorija : listaKategorija) {
+	    List<Artikl> listaArtikalaKategorije = new ArrayList<>(kategorija.dohvatiListuArtikala());
 	    mapaArtikalaPoKategoriji.put(kategorija, listaArtikalaKategorije);
 	}
 
@@ -126,11 +124,10 @@ public class Glavna {
 	    System.out.print(horizontalIsprekidanaLine());
 	}
 	System.out.println("\nIspis po kategorijama:");
-	for (Kategorija kategorija : listaKategorija) {
+	for (Kategorija<?> kategorija : listaKategorija) {
 	    System.out.print(horizontalIsprekidanaLine());
 	    System.out.println("\nKategorija: " + kategorija.getNaziv());
-	    Set<Artikl> artikliKategorije = new HashSet<>(kategorija.getArtikli());
-	    List<Artikl> listaArtikalaKategorije = new ArrayList<>(artikliKategorije);
+	    List<Artikl> listaArtikalaKategorije = new ArrayList<>(kategorija.dohvatiListuArtikala());
 	    Collections.sort(listaArtikalaKategorije, new ArtiklSorter());
 	    for (Artikl artiklKategorije : listaArtikalaKategorije) {
 		System.out.print(horizontalIsprekidanaLine());
@@ -138,7 +135,7 @@ public class Glavna {
 	    }
 	}
 	System.out.println("\nIspis mape:");
-	for (Kategorija key : mapaArtikalaPoKategoriji.keySet()) {
+	for (Kategorija<?> key : mapaArtikalaPoKategoriji.keySet()) {
 	    System.out.print(horizontalIsprekidanaLine());
 	    System.out.println("\nKategorija: " + key.getNaziv());
 	    for (int i = 0; i < mapaArtikalaPoKategoriji.get(key).size(); i++) {
@@ -164,7 +161,7 @@ public class Glavna {
      * @return vraæa novi objekt prodaje odn. oglas
      */
     private static Prodaja unesiProdaju(Scanner ucitavac, int i, List<Korisnik> listaKorisnika,
-	    List<Kategorija> listaKategorija) {
+	    List<Kategorija<?>> listaKategorija) {
 	Integer redniBrojKorisnika = 0;
 	System.out.println("Odaberite korisnika: ");
 	int j = 0;
@@ -184,18 +181,15 @@ public class Glavna {
 	Integer redniBrojKategorije = 0;
 	System.out.println("Odaberite kategoriju: ");
 	j = 0;
-	for (Kategorija kategorija : listaKategorija) {
+	for (Kategorija<?> kategorija : listaKategorija) {
 	    System.out.println((j + 1) + ". " + kategorija.getNaziv());
 	    j++;
 	}
 	System.out.print("Odabir kategorije >> ");
 	redniBrojKategorije = provjeriIntBroj(ucitavac);
 	ucitavac.nextLine();
-	Kategorija odabranaKategorija = listaKategorija.get(redniBrojKategorije - 1);
-
-	Set<Artikl> setArtikalaKategorije = new HashSet<Artikl>();
-	setArtikalaKategorije = odabranaKategorija.getArtikli();
-	List<Artikl> listaArtikalaKategorije = new ArrayList<>(setArtikalaKategorije);
+	Kategorija<?> odabranaKategorija = listaKategorija.get(redniBrojKategorije - 1);
+	List<Artikl> listaArtikalaKategorije = new ArrayList<>(odabranaKategorija.dohvatiListuArtikala());
 	System.out.println("Odaberite artikl:");
 	Integer redniBrojArtikla = 0;
 	j = 0;
@@ -325,14 +319,14 @@ public class Glavna {
      *         artikala koji spadaju u tu kategoriju, tipu artikla kao i samim
      *         artiklima koji spadaju u tu kategoriju
      */
-    private static Kategorija unesiKategoriju(Scanner ucitavac, int i) {
+    private static Kategorija<?> unesiKategoriju(Scanner ucitavac, int i) {
 	System.out.print("Unesite naziv " + (i + 1) + ". kategorije: ");
 	String naziv = ucitavac.nextLine();
 	naziv = naziv.substring(0, 1).toUpperCase() + naziv.substring(1).toLowerCase();
 	System.out.print("Unesite broj artikala koji želite unijeti za unesenu kategoriju: ");
 	int brojArtikalaKategorije = provjeriIntBroj(ucitavac);
 	ucitavac.nextLine();
-	Set<Artikl> artikliKategorije = new HashSet<>();
+	List<Artikl> listaArtikalaKategorije = new ArrayList<>();
 	for (int j = 0; j < brojArtikalaKategorije; j++) {
 	    System.out.println("Unesite tip " + (j + 1) + ". artikla");
 	    int k = 0;
@@ -346,16 +340,16 @@ public class Glavna {
 		ucitavac.nextLine();
 	    } while (k != 1 && k != 2 && k != 3);
 	    if (k == 1) {
-		artikliKategorije.add(unesiUslugu(ucitavac, j + 1));
+		listaArtikalaKategorije.add(unesiUslugu(ucitavac, j + 1));
 	    }
 	    if (k == 2) {
-		artikliKategorije.add(unesiAutomobil(ucitavac, j + 1));
+		listaArtikalaKategorije.add(unesiAutomobil(ucitavac, j + 1));
 	    }
 	    if (k == 3) {
-		artikliKategorije.add(unesiStan(ucitavac, j + 1));
+		listaArtikalaKategorije.add(unesiStan(ucitavac, j + 1));
 	    }
 	}
-	return new Kategorija(naziv, artikliKategorije);
+	return new Kategorija(naziv, listaArtikalaKategorije);
     }
 
     /**
@@ -449,10 +443,10 @@ public class Glavna {
      */
     private static BigDecimal provjeriBigDecimalBroj(Scanner ucitavac) {
 	boolean nastaviPetlju = false;
-	BigDecimal cijeliBroj = new BigDecimal(0);
+	BigDecimal decimalniiBroj = new BigDecimal(0);
 	do {
 	    try {
-		cijeliBroj = ucitavac.nextBigDecimal();
+		decimalniiBroj = ucitavac.nextBigDecimal();
 		nastaviPetlju = false;
 	    } catch (InputMismatchException e) {
 		logger.info("Pogreška prilikom unosa BigDecimal tipa podatka");
@@ -462,9 +456,8 @@ public class Glavna {
 		nastaviPetlju = true;
 	    }
 	} while (nastaviPetlju);
-	return cijeliBroj;
+	return decimalniiBroj;
     }
-
     /**
      * @return vraæa horizontalnu iscrtanu liniju za odjeljivanje bitnih dijelova
      *         kod ispisa rezultata

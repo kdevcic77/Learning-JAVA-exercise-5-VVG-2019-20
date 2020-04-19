@@ -1,17 +1,18 @@
 package hr.java.vjezbe.entitet;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Predstavlja entitet kategorija koji je definiran nazivom kategorije i
  * artiklima koje spadaju u tu kategoriju
  * 
  * @author deva
- * @version Devcic-4
+ * @version Devcic-5
  */
-public class Kategorija {
+public class Kategorija<T extends Artikl> {
     private String naziv;
-    private Set<Artikl> artikli;
+    private List<T> listaArtikala = new ArrayList<T>();
 
     /**
      * Inicijalizira podatak o nazivu i artiklima kategorije
@@ -19,10 +20,23 @@ public class Kategorija {
      * @param naziv   - podatak o nazivu kategorije
      * @param artikli - podatak o artiklima koji se nalaze u kateogoriji
      */
-    public Kategorija(String naziv, Set<Artikl> artikli) {
+    public Kategorija(String naziv, List<T> listaArtikala) {
 	super();
 	this.naziv = naziv;
-	this.artikli = artikli;
+	this.listaArtikala = listaArtikala;
+    }
+
+    public void dodajArtikl(T artikl) {
+	listaArtikala.add(artikl);
+    }
+
+    public T dohvatiArtikl(Integer indeks) {
+	return this.listaArtikala.get(indeks);
+    }
+
+    public List<T> dohvatiListuArtikala() {
+	return this.listaArtikala;
+
     }
 
     public String getNaziv() {
@@ -31,14 +45,6 @@ public class Kategorija {
 
     public void setNaziv(String naziv) {
 	this.naziv = naziv;
-    }
-
-    public Set<Artikl> getArtikli() {
-	return artikli;
-    }
-
-    public void setArtikli(Set<Artikl> artikli) {
-	this.artikli = artikli;
     }
 
     @Override
@@ -57,7 +63,7 @@ public class Kategorija {
 	    return false;
 	if (getClass() != obj.getClass())
 	    return false;
-	Kategorija other = (Kategorija) obj;
+	Kategorija<?> other = (Kategorija<?>) obj;
 	if (naziv == null) {
 	    if (other.naziv != null)
 		return false;
@@ -65,6 +71,5 @@ public class Kategorija {
 	    return false;
 	return true;
     }
-    
 
 }
