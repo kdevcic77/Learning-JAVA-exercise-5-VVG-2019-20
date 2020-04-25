@@ -93,7 +93,7 @@ public class Automobil extends Artikl implements Vozilo {
 	    logger.error(e.getMessage(), e);
 	}
 	String tekstOglasa = ("\nNaslov automobila: " + getNaslov() + "\nOpis automobila: " + getOpis()
-		+ "\nSnaga automobila: " + getSnagaKs() + "\nCijena osiguranja " + izracunCijeneOsiguranja
+		+ "\nSnaga automobila: " + getSnagaKs() + "\nStanje automobila: "+ getStanje()+"\nCijena osiguranja " + izracunCijeneOsiguranja
 		+ "\nCijena automobila: " + getCijena());
 	return tekstOglasa;
     }

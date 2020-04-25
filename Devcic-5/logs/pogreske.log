@@ -222,3 +222,5 @@ hr.java.vjezbe.iznimke.CijenaJePreniskaException: Pogreška prilikom odreðivanja 
 2020-04-18 12:48:01,699 INFO [main] h.j.v.g.Glavna [Glavna.java:58] Pokretanje programa
 2020-04-18 12:58:35,380 INFO [main] h.j.v.g.Glavna [Glavna.java:58] Pokretanje programa
 2020-04-18 13:00:05,585 INFO [main] h.j.v.g.Glavna [Glavna.java:58] Pokretanje programa
+2020-04-19 11:34:40,725 INFO [main] h.j.v.g.Glavna [Glavna.java:56] Pokretanje programa
+2020-04-19 11:51:53,119 INFO [main] h.j.v.g.Glavna [Glavna.java:54] Pokretanje programa
