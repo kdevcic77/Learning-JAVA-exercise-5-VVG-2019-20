@@ -10,11 +10,10 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
 
 import hr.java.vjezbe.entitet.Artikl;
 import hr.java.vjezbe.entitet.Automobil;
@@ -26,7 +25,6 @@ import hr.java.vjezbe.entitet.Prodaja;
 import hr.java.vjezbe.entitet.Stan;
 import hr.java.vjezbe.entitet.Stanje;
 import hr.java.vjezbe.entitet.Usluga;
-import hr.java.vjezbe.sortiranje.ArtiklSorter;
 
 /**
  * Predstavlja programski dio koda koji služi za kreiranje i objavu oglasa
@@ -128,21 +126,48 @@ public class Glavna {
 	    System.out.print(horizontalIsprekidanaLine());
 	    System.out.println("\nKategorija: " + kategorija.getNaziv());
 	    List<Artikl> listaArtikalaKategorije = new ArrayList<>(kategorija.dohvatiListuArtikala());
-	    Collections.sort(listaArtikalaKategorije, new ArtiklSorter());
-	    for (Artikl artiklKategorije : listaArtikalaKategorije) {
+
+//	    izbacivanje korištenja sortiranja uz pomoæ paketa "hr.java.vjezbe.sortiranje" i klase "ArtiklSorter"
+//	    Collections.sort(listaArtikalaKategorije, new ArtiklSorter());
+
+//          Lambda izraz sa tipom infomracije parametara klase koje želimo usporediti   
+//	    Collections.sort(listaArtikalaKategorije,
+//		    (Artikl p1, Artikl p2) -> p1.getNaslov().compareTo(p2.getNaslov()));
+//          Lambda izraz sa micanjem tipa informacije koji želimo usporediti
+
+	    Collections.sort(listaArtikalaKategorije, (p1, p2) -> p1.getNaslov().compareTo(p2.getNaslov()));
+
+//	    ZAMJENA FOR PETLJI LISTE LAMBDA IZRAZOM	
+//	    for (Artikl artiklKategorije : listaArtikalaKategorije) {
+//		System.out.print(horizontalIsprekidanaLine());
+//		System.out.println(artiklKategorije.tekstOglasa());
+//	    }
+
+	    listaArtikalaKategorije.forEach(s -> {
 		System.out.print(horizontalIsprekidanaLine());
-		System.out.println(artiklKategorije.tekstOglasa());
-	    }
+		System.out.println(s.tekstOglasa());
+	    });
 	}
+//      ZAMJENA FOR PETLJI MAPE LAMBDA IZRAZIMA
+//	System.out.println("\nIspis mape:");
+//	for (Kategorija<?> key : mapaArtikalaPoKategoriji.keySet()) {
+//	    System.out.print(horizontalIsprekidanaLine());
+//	    System.out.println("\nKategorija: " + key.getNaziv());
+//	    for (int i = 0; i < mapaArtikalaPoKategoriji.get(key).size(); i++) {
+//		System.out.print(horizontalIsprekidanaLine());
+//		System.out.println(mapaArtikalaPoKategoriji.get(key).get(i).tekstOglasa());
+//	    }
+//	}
 	System.out.println("\nIspis mape:");
-	for (Kategorija<?> key : mapaArtikalaPoKategoriji.keySet()) {
+	mapaArtikalaPoKategoriji.keySet().forEach(key -> {
 	    System.out.print(horizontalIsprekidanaLine());
 	    System.out.println("\nKategorija: " + key.getNaziv());
-	    for (int i = 0; i < mapaArtikalaPoKategoriji.get(key).size(); i++) {
+	    IntStream.range(0, mapaArtikalaPoKategoriji.get(key).size()).forEach(i -> {
 		System.out.print(horizontalIsprekidanaLine());
 		System.out.println(mapaArtikalaPoKategoriji.get(key).get(i).tekstOglasa());
-	    }
-	}
+	    });
+	});
+
     }
 
     /**
@@ -349,7 +374,7 @@ public class Glavna {
 		listaArtikalaKategorije.add(unesiStan(ucitavac, j + 1));
 	    }
 	}
-	return new Kategorija(naziv, listaArtikalaKategorije);
+	return new Kategorija<>(naziv, listaArtikalaKategorije);
     }
 
     /**
@@ -458,6 +483,7 @@ public class Glavna {
 	} while (nastaviPetlju);
 	return decimalniiBroj;
     }
+
     /**
      * @return vraæa horizontalnu iscrtanu liniju za odjeljivanje bitnih dijelova
      *         kod ispisa rezultata
